@@ -14,18 +14,26 @@ contract Oracle is IOracle, Governable {
 
   constructor() Governable(msg.sender) {}
 
-  function getAmountOut(address _tokenIn, uint256 _amountIn, address _tokenOut) external returns (uint256) {
+  function getAmountOut(
+    address _tokenIn,
+    uint256 _amountIn,
+    address _tokenOut
+  ) external returns (uint256) {
     address wrapperAddress = getWrapperAddress(_tokenIn, _tokenOut);
     IExchangeWrapper(wrapperAddress).getAmountOut(_tokenIn, _amountIn, _tokenOut);
   }
 
   function setDefaultWrapper(address _wrapper) external onlyGovernance {
-    if(_wrapper == address(0)) revert ZeroAddress();
+    if (_wrapper == address(0)) revert ZeroAddress();
     defaultWrapper = _wrapper;
     emit DefaultWrapperUpdated(_wrapper);
   }
 
-  function setPairWrapper(address _tokenIn, address _tokenOut, address _wrapper) external onlyGovernance {
+  function setPairWrapper(
+    address _tokenIn,
+    address _tokenOut,
+    address _wrapper
+  ) external onlyGovernance {
     pairWrappers[_tokenIn][_tokenOut] = _wrapper;
     emit PairWrapperUpdated(_tokenIn, _tokenOut, _wrapper);
   }

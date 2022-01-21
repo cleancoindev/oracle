@@ -7,11 +7,15 @@ import './Governable.sol';
 contract UniswapV2Wrapper is IExchangeWrapper, Governable {
   address public uniswapV2Address;
 
-  constructor (address _uniswapV2) Governable(msg.sender) public {
+  constructor(address _uniswapV2) public Governable(msg.sender) {
     uniswapV2Address = _uniswapV2;
   }
 
-  function getAmountOut(address _tokenIn, uint256 _amountIn, address _tokenOut) external override returns (uint256) {
+  function getAmountOut(
+    address _tokenIn,
+    uint256 _amountIn,
+    address _tokenOut
+  ) external override returns (uint256) {
     // TODO: Proxying the call to Uniswap
   }
 

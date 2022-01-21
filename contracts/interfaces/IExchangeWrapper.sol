@@ -10,5 +10,9 @@ interface IExchangeWrapper is IGovernable {
   /// @param _amountIn The amount of base token to be converted
   /// @param _tokenOut The address of the quote token
   /// @return The amount of _tokenOut that can be exchanged to _amountIn of _tokenIn
-  function getAmountOut(address _tokenIn, uint256 _amountIn, address _tokenOut) external returns (uint256);
+  function getAmountOut(
+    address _tokenIn,
+    uint256 _amountIn,
+    address _tokenOut
+  ) external returns (uint256);
 }
