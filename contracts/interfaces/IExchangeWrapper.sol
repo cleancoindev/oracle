@@ -1,11 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity >=0.8.4 <0.9.0;
 
-import './IGovernable.sol';
-
-interface IExchangeWrapper is IGovernable {
-  event ExchangeAddressUpdated(address _exchange);
-
+interface IExchangeWrapper {
   /// @param _tokenIn The address of the base token
   /// @param _amountIn The amount of base token to be converted
   /// @param _tokenOut The address of the quote token

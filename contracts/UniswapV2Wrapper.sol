@@ -2,25 +2,23 @@
 pragma solidity >=0.8.4 <0.9.0;
 
 import './interfaces/IExchangeWrapper.sol';
-import './Governable.sol';
+import './interfaces/IUniswapV2Pair.sol';
+import './libraries/UniswapV2Library.sol';
 
-contract UniswapV2Wrapper is IExchangeWrapper, Governable {
-  address public uniswapV2Address;
+contract UniswapV2Wrapper is IExchangeWrapper {
+  address public immutable uniswapV2Factory;
 
-  constructor(address _uniswapV2) public Governable(msg.sender) {
-    uniswapV2Address = _uniswapV2;
+  constructor(address _uniswapV2Factory) {
+    uniswapV2Factory = _uniswapV2Factory;
   }
 
   function getAmountOut(
     address _tokenIn,
     uint256 _amountIn,
     address _tokenOut
-  ) external override returns (uint256) {
-    // TODO: Proxying the call to Uniswap
-  }
-
-  function setUniswapV2Address(address _uniswapV2) public onlyGovernance {
-    uniswapV2Address = _uniswapV2;
-    emit ExchangeAddressUpdated(_uniswapV2);
+  ) external view override returns (uint256) {
+    address pair = UniswapV2Library.pairFor(uniswapV2Factory, _tokenIn, _tokenOut);
+    (uint256 reserveIn, uint256 reserveOut, ) = IUniswapV2Pair(pair).getReserves();
+    return UniswapV2Library.getAmountOut(_amountIn, reserveIn, reserveOut);
   }
 }

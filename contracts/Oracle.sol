@@ -20,13 +20,19 @@ contract Oracle is IOracle, Governable {
     address _tokenOut
   ) external returns (uint256) {
     address wrapperAddress = getWrapperAddress(_tokenIn, _tokenOut);
-    IExchangeWrapper(wrapperAddress).getAmountOut(_tokenIn, _amountIn, _tokenOut);
+    if (wrapperAddress == address(0)) revert ZeroAddress();
+    return IExchangeWrapper(wrapperAddress).getAmountOut(_tokenIn, _amountIn, _tokenOut);
   }
 
   function setDefaultWrapper(address _wrapper) external onlyGovernance {
     if (_wrapper == address(0)) revert ZeroAddress();
     defaultWrapper = _wrapper;
     emit DefaultWrapperUpdated(_wrapper);
+  }
+
+  function setTokenWrapper(address _tokenIn, address _wrapper) external onlyGovernance {
+    tokenWrappers[_tokenIn] = _wrapper;
+    emit TokenWrapperUpdated(_tokenIn, _wrapper);
   }
 
   function setPairWrapper(
@@ -36,11 +42,6 @@ contract Oracle is IOracle, Governable {
   ) external onlyGovernance {
     pairWrappers[_tokenIn][_tokenOut] = _wrapper;
     emit PairWrapperUpdated(_tokenIn, _tokenOut, _wrapper);
-  }
-
-  function setTokenWrapper(address _tokenIn, address _wrapper) external onlyGovernance {
-    tokenWrappers[_tokenIn] = _wrapper;
-    emit TokenWrapperUpdated(_tokenIn, _wrapper);
   }
 
   function getWrapperAddress(address _tokenIn, address _tokenOut) public view returns (address) {
