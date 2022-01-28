@@ -18,7 +18,7 @@ contract UniswapV2Wrapper is IExchangeWrapper {
     address _tokenOut
   ) external view override returns (uint256) {
     address pair = UniswapV2Library.pairFor(uniswapV2Factory, _tokenIn, _tokenOut);
-    (uint256 reserveIn, uint256 reserveOut, ) = IUniswapV2Pair(pair).getReserves();
+    (uint112 reserveIn, uint112 reserveOut, ) = IUniswapV2Pair(pair).getReserves();
     return UniswapV2Library.getAmountOut(_amountIn, reserveIn, reserveOut);
   }
 }
