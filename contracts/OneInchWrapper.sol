@@ -6,8 +6,8 @@ import './interfaces/IExchangeWrapper.sol';
 import './interfaces/IOneSplitAudit.sol';
 
 contract OneInchWrapper is IExchangeWrapper {
-  uint256 constant FLAGS = 0;
-  uint256 constant PARTS = 0;
+  uint256 public constant FLAGS = 0;
+  uint256 public constant PARTS = 1;
   address public immutable oneInchAggregator;
 
   constructor(address _oneInchAggregator) {
