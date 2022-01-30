@@ -20,13 +20,24 @@ interface IOracle {
     address _tokenOut
   ) external returns (uint256);
 
+  /// @notice Emits DefaultWrapperUpdated event
+  /// @param _wrapper The address of the new wrapper, can't be the zero address
   function setDefaultWrapper(address _wrapper) external;
 
+  /// @notice Emits PairWrapperUpdated event
+  /// @param _tokenIn The address of the base token
+  /// @param _tokenOut The address of the quote token
+  /// @param _wrapper The address of the new wrapper
+  /// @dev Pass 0x0000~ to remove the wrapper and use default
   function setPairWrapper(
     address _tokenIn,
     address _tokenOut,
     address _wrapper
   ) external;
 
+  /// @notice Emits TokenWrapperUpdated event
+  /// @param _tokenIn The address of the base token
+  /// @param _wrapper The address of the new wrapper
+  /// @dev Pass 0x0000~ to remove the wrapper and use default
   function setTokenWrapper(address _tokenIn, address _wrapper) external;
 }

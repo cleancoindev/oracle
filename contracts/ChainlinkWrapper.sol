@@ -11,8 +11,8 @@ contract ChainlinkWrapper is IExchangeWrapper {
     oracle = _oracle;
   }
 
-  // _tokenIn and _tokenOut are not used because we're wrapping a certain oracle, e.g. providing ETH/USD price
-  // and passing other assets in does not make sense
+  /// @dev _tokenIn and _tokenOut are not used because we're wrapping a certain oracle, e.g. providing ETH/USD price, and passing other assets in does not make sense
+  /// @inheritdoc IExchangeWrapper
   function getAmountOut(
     address _tokenIn,
     uint256 _amountIn,

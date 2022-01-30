@@ -12,6 +12,7 @@ contract UniswapV2Wrapper is IExchangeWrapper {
     uniswapV2Factory = _uniswapV2Factory;
   }
 
+  /// @inheritdoc IExchangeWrapper
   function getAmountOut(
     address _tokenIn,
     uint256 _amountIn,

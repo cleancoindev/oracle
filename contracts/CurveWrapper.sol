@@ -11,6 +11,7 @@ contract CurveWrapper is IExchangeWrapper {
     synthSwap = _synthSwap;
   }
 
+  /// @inheritdoc IExchangeWrapper
   function getAmountOut(
     address _tokenIn,
     uint256 _amountIn,

@@ -5,7 +5,6 @@ import './interfaces/IOracle.sol';
 import './interfaces/IExchangeWrapper.sol';
 import './Governable.sol';
 
-/// @notice Pairs have priority over tokens, and tokens over default
 contract Oracle is IOracle, Governable {
   mapping(address => mapping(address => address)) public pairWrappers;
   mapping(address => address) public tokenWrappers;
@@ -14,6 +13,7 @@ contract Oracle is IOracle, Governable {
 
   constructor() Governable(msg.sender) {}
 
+  /// @inheritdoc IOracle
   function getAmountOut(
     address _tokenIn,
     uint256 _amountIn,
@@ -24,17 +24,14 @@ contract Oracle is IOracle, Governable {
     return IExchangeWrapper(wrapperAddress).getAmountOut(_tokenIn, _amountIn, _tokenOut);
   }
 
+  /// @inheritdoc IOracle
   function setDefaultWrapper(address _wrapper) external onlyGovernance {
     if (_wrapper == address(0)) revert ZeroAddress();
     defaultWrapper = _wrapper;
     emit DefaultWrapperUpdated(_wrapper);
   }
 
-  function setTokenWrapper(address _tokenIn, address _wrapper) external onlyGovernance {
-    tokenWrappers[_tokenIn] = _wrapper;
-    emit TokenWrapperUpdated(_tokenIn, _wrapper);
-  }
-
+  /// @inheritdoc IOracle
   function setPairWrapper(
     address _tokenIn,
     address _tokenOut,
@@ -44,6 +41,16 @@ contract Oracle is IOracle, Governable {
     emit PairWrapperUpdated(_tokenIn, _tokenOut, _wrapper);
   }
 
+  /// @inheritdoc IOracle
+  function setTokenWrapper(address _tokenIn, address _wrapper) external onlyGovernance {
+    tokenWrappers[_tokenIn] = _wrapper;
+    emit TokenWrapperUpdated(_tokenIn, _wrapper);
+  }
+
+  /// @notice Pairs have priority over tokens, and tokens over default
+  /// @param _tokenIn The address of the base token
+  /// @param _tokenOut The address of the quote token
+  /// @return The address of the wrapper 
   function getWrapperAddress(address _tokenIn, address _tokenOut) public view returns (address) {
     address pairWrapper = pairWrappers[_tokenIn][_tokenOut];
     if (pairWrapper != address(0)) return pairWrapper;

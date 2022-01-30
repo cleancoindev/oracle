@@ -7,7 +7,7 @@ import './interfaces/IQuoter.sol';
 contract UniswapV3Wrapper is IExchangeWrapper {
   address public immutable uniswapV3Quoter;
 
-  // We assume no fee and no restrictions on the price
+  // We assume no fee and no restrictions on the max price
   uint24 public constant SWAP_FEE = 0;
   uint160 public constant PRICE_LIMIT = 0;
 
@@ -15,6 +15,7 @@ contract UniswapV3Wrapper is IExchangeWrapper {
     uniswapV3Quoter = _uniswapV3Quoter;
   }
 
+  /// @inheritdoc IExchangeWrapper
   function getAmountOut(
     address _tokenIn,
     uint256 _amountIn,
