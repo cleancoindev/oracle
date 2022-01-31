@@ -50,7 +50,7 @@ contract Oracle is IOracle, Governable {
   /// @notice Pairs have priority over tokens, and tokens over default
   /// @param _tokenIn The address of the base token
   /// @param _tokenOut The address of the quote token
-  /// @return The address of the wrapper 
+  /// @return The address of the wrapper
   function getWrapperAddress(address _tokenIn, address _tokenOut) public view returns (address) {
     address pairWrapper = pairWrappers[_tokenIn][_tokenOut];
     if (pairWrapper != address(0)) return pairWrapper;
