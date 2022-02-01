@@ -133,4 +133,56 @@ describe('Wrappers', function () {
       });
     });
   });
+
+  describe('UniswapV2Wrapper', function () {
+    let wrapper: UniswapV2Wrapper;
+    let wrapperFactory: UniswapV2Wrapper__factory;
+    let uniswapPair: FakeContract<IUniswapV2Pair>;
+
+    before(async () => {
+      uniswapPair = await smock.fake('IUniswapV2Pair');
+
+      wrapperFactory = (await ethers.getContractFactory('UniswapV2Wrapper')) as UniswapV2Wrapper__factory;
+      wrapper = await wrapperFactory.connect(deployer).deploy(uniswapPair.address);
+
+      snapshotId = await evm.snapshot.take();
+    });
+
+    beforeEach(async () => {
+      uniswapPair.getReserves.returns([amountIn, amountIn, 0]);
+    });
+
+    describe('getAmountOut', async function () {
+      it('should return the amount based on the current pair balance', async function () {
+        expect(await wrapper.connect(randomUser).getAmountOut(tokenIn, amountIn, tokenOut)).to.eq(amountOut);
+        expect(uniswapPair.getReserves).to.have.been.called;
+      });
+    });
+  });
+
+  describe('UniswapV3Wrapper', function () {
+    let wrapper: UniswapV3Wrapper;
+    let wrapperFactory: UniswapV3Wrapper__factory;
+    let quoter: FakeContract<IQuoter>;
+
+    before(async () => {
+      quoter = await smock.fake('IQuoter');
+
+      wrapperFactory = (await ethers.getContractFactory('UniswapV3Wrapper')) as UniswapV3Wrapper__factory;
+      wrapper = await wrapperFactory.connect(deployer).deploy(quoter.address);
+
+      snapshotId = await evm.snapshot.take();
+    });
+
+    beforeEach(async () => {
+      quoter.quoteExactInputSingle.returns(amountOut);
+    });
+
+    describe('getAmountOut', async function () {
+      it('should return the amount fetched from the quoter contract', async function () {
+        expect(await wrapper.connect(randomUser).getAmountOut(tokenIn, amountIn, tokenOut)).to.eq(amountOut);
+        expect(quoter.quoteExactInputSingle).to.have.been.called;
+      });
+    });
+  });
 });
