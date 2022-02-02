@@ -18,7 +18,7 @@ contract ChainlinkWrapper is IExchangeWrapper {
     uint256 _amountIn,
     address _tokenOut
   ) external view override returns (uint256) {
-    uint256 price = IChainlinkOracle(oracle).latestAnswer();
-    return price * _amountIn;
+    uint256 _price = IChainlinkOracle(oracle).latestAnswer();
+    return _price * _amountIn;
   }
 }

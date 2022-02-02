@@ -16,7 +16,7 @@ contract CurveWrapper is IExchangeWrapper {
     address _tokenIn,
     uint256 _amountIn,
     address _tokenOut
-  ) external view override returns (uint256) {
-    return ISynthSwap(synthSwap).get_estimated_swap_amount(_tokenIn, _tokenOut, _amountIn);
+  ) external view override returns (uint256 _amountOut) {
+    _amountOut = ISynthSwap(synthSwap).get_estimated_swap_amount(_tokenIn, _tokenOut, _amountIn);
   }
 }

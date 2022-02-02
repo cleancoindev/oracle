@@ -19,9 +19,9 @@ contract Oracle is IOracle, Governable {
     uint256 _amountIn,
     address _tokenOut
   ) external returns (uint256) {
-    address wrapperAddress = getWrapperAddress(_tokenIn, _tokenOut);
-    if (wrapperAddress == address(0)) revert ZeroAddress();
-    return IExchangeWrapper(wrapperAddress).getAmountOut(_tokenIn, _amountIn, _tokenOut);
+    address _wrapperAddress = getWrapperAddress(_tokenIn, _tokenOut);
+    if (_wrapperAddress == address(0)) revert ZeroAddress();
+    return IExchangeWrapper(_wrapperAddress).getAmountOut(_tokenIn, _amountIn, _tokenOut);
   }
 
   /// @inheritdoc IOracle
@@ -52,11 +52,11 @@ contract Oracle is IOracle, Governable {
   /// @param _tokenOut The address of the quote token
   /// @return The address of the wrapper
   function getWrapperAddress(address _tokenIn, address _tokenOut) public view returns (address) {
-    address pairWrapper = pairWrappers[_tokenIn][_tokenOut];
-    if (pairWrapper != address(0)) return pairWrapper;
+    address _pairWrapper = pairWrappers[_tokenIn][_tokenOut];
+    if (_pairWrapper != address(0)) return _pairWrapper;
 
-    address tokenWrapper = tokenWrappers[_tokenIn];
-    if (tokenWrapper != address(0)) return tokenWrapper;
+    address _tokenWrapper = tokenWrappers[_tokenIn];
+    if (_tokenWrapper != address(0)) return _tokenWrapper;
 
     return defaultWrapper;
   }
