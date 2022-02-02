@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import { Oracle, Oracle__factory } from '@typechained';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { evm, wallet } from '@utils';
+import { evm, wallet, behaviours } from '@utils';
 import { DAI_ADDRESS, USDC_ADDRESS } from '@utils/constants';
 
 describe('Oracle', function () {
@@ -29,31 +29,31 @@ describe('Oracle', function () {
     await evm.snapshot.revert(snapshotId);
   });
 
-  it('should allow governance to set default wrapper', async function () {
-    await oracle.setDefaultWrapper(defaultWrapper);
-    expect(await oracle.defaultWrapper()).to.eq(defaultWrapper);
+  describe('setDefaultWrapper', async function () {
+    behaviours.fnShouldOnlyBeCallableByGovernance(
+      () => oracle,
+      'setDefaultWrapper',
+      governance,
+      () => [defaultWrapper]
+    );
   });
 
-  it('should allow governance to set a token wrapper', async function () {
-    await oracle.setTokenWrapper(USDC_ADDRESS, tokenWrapper);
-    expect(await oracle.tokenWrappers(USDC_ADDRESS)).to.eq(tokenWrapper);
+  describe('setTokenWrapper', async function () {
+    behaviours.fnShouldOnlyBeCallableByGovernance(
+      () => oracle,
+      'setTokenWrapper',
+      governance,
+      () => [USDC_ADDRESS, tokenWrapper]
+    );
   });
 
-  it('should allow governance to set a pair wrapper', async function () {
-    await oracle.setPairWrapper(USDC_ADDRESS, DAI_ADDRESS, pairWrapper);
-    expect(await oracle.pairWrappers(USDC_ADDRESS, DAI_ADDRESS)).to.eq(pairWrapper);
-  });
-
-  it('should not allow users to set default wrapper', async function () {
-    await expect(oracle.connect(randomUser).setDefaultWrapper(defaultWrapper)).to.be.revertedWith('OnlyGovernance');
-  });
-
-  it('should not allow users to set a token wrapper', async function () {
-    await expect(oracle.connect(randomUser).setTokenWrapper(USDC_ADDRESS, tokenWrapper)).to.be.revertedWith('OnlyGovernance');
-  });
-
-  it('should not allow users to set a pair wrapper', async function () {
-    await expect(oracle.connect(randomUser).setPairWrapper(USDC_ADDRESS, DAI_ADDRESS, pairWrapper)).to.be.revertedWith('OnlyGovernance');
+  describe('setPairWrapper', async function () {
+    behaviours.fnShouldOnlyBeCallableByGovernance(
+      () => oracle,
+      'setPairWrapper',
+      governance,
+      () => [USDC_ADDRESS, DAI_ADDRESS, pairWrapper]
+    );
   });
 
   describe('getWrapperAddress', async function () {
@@ -79,9 +79,8 @@ describe('Oracle', function () {
     });
 
     it('prioritizes token over default wrapper', async function () {
-      await oracle.setPairWrapper(USDC_ADDRESS, DAI_ADDRESS, pairWrapper);
       await oracle.setTokenWrapper(USDC_ADDRESS, tokenWrapper);
-      expect(await oracle.getWrapperAddress(USDC_ADDRESS, DAI_ADDRESS)).to.eq(pairWrapper);
+      expect(await oracle.getWrapperAddress(USDC_ADDRESS, DAI_ADDRESS)).to.eq(tokenWrapper);
     });
   });
 });

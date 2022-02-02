@@ -165,6 +165,8 @@ describe('Wrappers', function () {
     let wrapper: UniswapV3Wrapper;
     let wrapperFactory: UniswapV3Wrapper__factory;
     let quoter: FakeContract<IQuoter>;
+    let swapFee: Number;
+    let priceLimit: BigNumber;
 
     before(async () => {
       quoter = await smock.fake('IQuoter');
@@ -176,13 +178,15 @@ describe('Wrappers', function () {
     });
 
     beforeEach(async () => {
-      quoter.quoteExactInputSingle.returns(amountOut);
+      swapFee = await wrapper.SWAP_FEE();
+      priceLimit = await wrapper.PRICE_LIMIT();
+      quoter.quoteExactInputSingle.whenCalledWith(tokenIn, tokenOut, swapFee, amountIn, priceLimit).returns(amountOut);
     });
 
     describe('getAmountOut', async function () {
       it('should return the amount fetched from the quoter contract', async function () {
         expect(await wrapper.connect(randomUser).getAmountOut(tokenIn, amountIn, tokenOut)).to.eq(amountOut);
-        expect(quoter.quoteExactInputSingle).to.have.been.called;
+        expect(quoter.quoteExactInputSingle).to.have.been.calledWith(tokenIn, tokenOut, swapFee, amountIn, priceLimit);
       });
     });
   });
