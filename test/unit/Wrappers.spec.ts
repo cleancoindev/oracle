@@ -2,7 +2,8 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { evm, bn } from '@utils';
+import { evm } from '@utils';
+import { toUnit, toBN } from '@utils/bn';
 import { BigNumber } from 'ethers';
 import { FakeContract, smock } from '@defi-wonderland/smock';
 import { DAI_ADDRESS, USDC_ADDRESS } from '@utils/constants';
@@ -48,8 +49,8 @@ describe('Wrappers', function () {
   before(async () => {
     [, deployer, randomUser] = await ethers.getSigners();
 
-    amountIn = bn.toBN('1');
-    amountOut = bn.toBN('2');
+    amountIn = toBN('1');
+    amountOut = toBN('2');
 
     tokenIn = DAI_ADDRESS;
     tokenOut = USDC_ADDRESS;

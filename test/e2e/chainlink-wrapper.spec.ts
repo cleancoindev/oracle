@@ -2,7 +2,8 @@ import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import { BigNumber, utils } from 'ethers';
 import { ChainlinkWrapper, ChainlinkWrapper__factory } from '@typechained';
-import { evm, bn } from '@utils';
+import { evm } from '@utils';
+import { toUnit, toBN } from '@utils/bn';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { USDC_ADDRESS, USD_ADDRESS, CHAINLINK_FEED_ADDRESS } from '@utils/constants';
 import { getNodeUrl } from 'utils/network';
@@ -33,8 +34,8 @@ describe('ChainlinkWrapper', async function () {
     chainlinkWrapperFactory = (await ethers.getContractFactory('ChainlinkWrapper')) as ChainlinkWrapper__factory;
     chainlinkWrapper = await chainlinkWrapperFactory.connect(deployer).deploy(CHAINLINK_FEED_ADDRESS);
 
-    amountIn = bn.toUnit(1);
-    amountOut = bn.toBN('99989271000000000000000000');
+    amountIn = toUnit(1);
+    amountOut = toBN('99989271000000000000000000');
 
     snapshotId = await evm.snapshot.take();
   });

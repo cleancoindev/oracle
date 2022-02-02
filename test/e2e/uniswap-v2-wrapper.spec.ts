@@ -2,7 +2,8 @@ import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import { BigNumber, utils } from 'ethers';
 import { UniswapV2Wrapper, UniswapV2Wrapper__factory } from '@typechained';
-import { evm, bn } from '@utils';
+import { evm } from '@utils';
+import { toUnit, toBN } from '@utils/bn';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { DAI_ADDRESS, USDC_ADDRESS, UNISWAP_V2_FACTORY_ADDRESS } from '@utils/constants';
 import { getNodeUrl } from 'utils/network';
@@ -33,8 +34,8 @@ describe('UniswapV2Wrapper', async function () {
     uniswapV2WrapperFactory = (await ethers.getContractFactory('UniswapV2Wrapper')) as UniswapV2Wrapper__factory;
     uniswapV2Wrapper = await uniswapV2WrapperFactory.connect(deployer).deploy(UNISWAP_V2_FACTORY_ADDRESS);
 
-    amountIn = bn.toUnit(1);
-    amountOut = bn.toBN('996207');
+    amountIn = toUnit(1);
+    amountOut = toBN('996207');
 
     snapshotId = await evm.snapshot.take();
   });

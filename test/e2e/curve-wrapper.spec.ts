@@ -2,7 +2,8 @@ import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import { BigNumber, utils } from 'ethers';
 import { CurveWrapper, CurveWrapper__factory } from '@typechained';
-import { evm, bn } from '@utils';
+import { evm } from '@utils';
+import { toUnit, toBN } from '@utils/bn';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { DAI_ADDRESS, USDC_ADDRESS, CURVE_SYNTH_SWAP_ADDRESS } from '@utils/constants';
 import { getNodeUrl } from 'utils/network';
@@ -33,8 +34,8 @@ describe('CurveWrapper', async function () {
     curveWrapperFactory = (await ethers.getContractFactory('CurveWrapper')) as CurveWrapper__factory;
     curveWrapper = await curveWrapperFactory.connect(deployer).deploy(CURVE_SYNTH_SWAP_ADDRESS);
 
-    amountIn = bn.toUnit(1);
-    amountOut = bn.toBN('995970');
+    amountIn = toUnit(1);
+    amountOut = toBN('995970');
 
     snapshotId = await evm.snapshot.take();
   });
