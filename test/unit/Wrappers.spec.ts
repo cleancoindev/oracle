@@ -6,7 +6,7 @@ import { evm } from '@utils';
 import { toUnit, toBN } from '@utils/bn';
 import { BigNumber } from 'ethers';
 import { FakeContract, smock } from '@defi-wonderland/smock';
-import { DAI_ADDRESS, USDC_ADDRESS } from '@utils/constants';
+import { DAI_ADDRESS, USDC_ADDRESS, UNISWAP_V2_FACTORY_ADDRESS, SUSHISWAP_FACTORY_ADDRESS } from '@utils/constants';
 import {
   // Chainlink
   ChainlinkWrapper,
@@ -32,6 +32,10 @@ import {
   UniswapV3Wrapper,
   UniswapV3Wrapper__factory,
   IQuoter,
+
+  // Sushiswap
+  SushiswapWrapper,
+  SushiswapWrapper__factory,
 } from '@typechained';
 
 chai.use(smock.matchers);
@@ -144,7 +148,33 @@ describe('Wrappers', function () {
       uniswapPair = await smock.fake('IUniswapV2Pair');
 
       wrapperFactory = (await ethers.getContractFactory('UniswapV2Wrapper')) as UniswapV2Wrapper__factory;
-      wrapper = await wrapperFactory.connect(deployer).deploy(uniswapPair.address);
+      wrapper = await wrapperFactory.connect(deployer).deploy(UNISWAP_V2_FACTORY_ADDRESS);
+
+      snapshotId = await evm.snapshot.take();
+    });
+
+    beforeEach(async () => {
+      uniswapPair.getReserves.returns([amountIn, amountIn, 0]);
+    });
+
+    describe('getAmountOut', async function () {
+      it('should return the amount based on the current pair balance', async function () {
+        expect(await wrapper.connect(randomUser).getAmountOut(tokenIn, amountIn, tokenOut)).to.eq(amountOut);
+        expect(uniswapPair.getReserves).to.have.been.called;
+      });
+    });
+  });
+
+  describe('SushiswapWrapper', function () {
+    let wrapper: SushiswapWrapper;
+    let wrapperFactory: SushiswapWrapper__factory;
+    let uniswapPair: FakeContract<IUniswapV2Pair>;
+
+    before(async () => {
+      uniswapPair = await smock.fake('IUniswapV2Pair');
+
+      wrapperFactory = (await ethers.getContractFactory('SushiswapWrapper')) as SushiswapWrapper__factory;
+      wrapper = await wrapperFactory.connect(deployer).deploy(SUSHISWAP_FACTORY_ADDRESS);
 
       snapshotId = await evm.snapshot.take();
     });
