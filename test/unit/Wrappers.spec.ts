@@ -6,7 +6,14 @@ import { evm } from '@utils';
 import { toUnit, toBN } from '@utils/bn';
 import { BigNumber } from 'ethers';
 import { FakeContract, smock } from '@defi-wonderland/smock';
-import { DAI_ADDRESS, USDC_ADDRESS, UNISWAP_V2_FACTORY_ADDRESS, SUSHISWAP_FACTORY_ADDRESS } from '@utils/constants';
+import {
+  DAI_ADDRESS,
+  USDC_ADDRESS,
+  UNISWAP_V2_FACTORY_ADDRESS,
+  UNISWAP_V2_PAIR_ADDRESS,
+  SUSHISWAP_FACTORY_ADDRESS,
+  SUSHISWAP_PAIR_ADDRESS,
+} from '@utils/constants';
 import {
   // Chainlink
   ChainlinkWrapper,
@@ -145,7 +152,7 @@ describe('Wrappers', function () {
     let uniswapPair: FakeContract<IUniswapV2Pair>;
 
     before(async () => {
-      uniswapPair = await smock.fake('IUniswapV2Pair');
+      uniswapPair = await smock.fake('IUniswapV2Pair', { address: UNISWAP_V2_PAIR_ADDRESS });
 
       wrapperFactory = (await ethers.getContractFactory('UniswapV2Wrapper')) as UniswapV2Wrapper__factory;
       wrapper = await wrapperFactory.connect(deployer).deploy(UNISWAP_V2_FACTORY_ADDRESS);
@@ -171,7 +178,7 @@ describe('Wrappers', function () {
     let uniswapPair: FakeContract<IUniswapV2Pair>;
 
     before(async () => {
-      uniswapPair = await smock.fake('IUniswapV2Pair');
+      uniswapPair = await smock.fake('IUniswapV2Pair', { address: SUSHISWAP_PAIR_ADDRESS });
 
       wrapperFactory = (await ethers.getContractFactory('SushiswapWrapper')) as SushiswapWrapper__factory;
       wrapper = await wrapperFactory.connect(deployer).deploy(SUSHISWAP_FACTORY_ADDRESS);
@@ -215,7 +222,7 @@ describe('Wrappers', function () {
 
     describe('getAmountOut', async function () {
       it('should return the amount fetched from the quoter contract', async function () {
-        expect(await wrapper.connect(randomUser).getAmountOut(tokenIn, amountIn, tokenOut)).to.eq(amountOut);
+        expect(await wrapper.connect(randomUser).callStatic.getAmountOut(tokenIn, amountIn, tokenOut)).to.eq(amountOut);
         expect(quoter.quoteExactInputSingle).to.have.been.calledWith(tokenIn, tokenOut, swapFee, amountIn, priceLimit);
       });
     });

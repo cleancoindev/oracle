@@ -7,8 +7,8 @@ import './interfaces/IQuoter.sol';
 contract UniswapV3Wrapper is IExchangeWrapper {
   address public immutable uniswapV3Quoter;
 
-  // We assume no fee and no restrictions on the max price
-  uint24 public constant SWAP_FEE = 0;
+  // We assume 0.5% fee and no restrictions on the max price
+  uint24 public constant SWAP_FEE = 500;
   uint160 public constant PRICE_LIMIT = 0;
 
   constructor(address _uniswapV3Quoter) {

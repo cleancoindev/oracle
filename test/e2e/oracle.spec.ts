@@ -1,16 +1,28 @@
-import chai from 'chai';
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import { BigNumber, utils } from 'ethers';
-import { Oracle, Oracle__factory, UniswapV2Wrapper, CurveWrapper, OneInchWrapper } from '@typechained';
 import { evm, bn } from '@utils';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { DAI_ADDRESS, USDC_ADDRESS, UNI_ADDRESS } from '@utils/constants';
 import { getNodeUrl } from 'utils/network';
 import forkBlockNumber from './fork-block-numbers';
-import { FakeContract, smock } from '@defi-wonderland/smock';
-
-chai.use(smock.matchers);
+import {
+  DAI_ADDRESS,
+  USDC_ADDRESS,
+  UNI_ADDRESS,
+  UNISWAP_V2_FACTORY_ADDRESS,
+  CURVE_SYNTH_SWAP_ADDRESS,
+  ONE_INCH_AGGREGATOR_ADDRESS,
+} from '@utils/constants';
+import {
+  Oracle,
+  Oracle__factory,
+  UniswapV2Wrapper,
+  UniswapV2Wrapper__factory,
+  CurveWrapper,
+  CurveWrapper__factory,
+  OneInchWrapper,
+  OneInchWrapper__factory,
+} from '@typechained';
 
 describe('Oracle', async function () {
   // Signers
@@ -20,11 +32,12 @@ describe('Oracle', async function () {
   // Contracts
   let oracle: Oracle;
   let oracleFactory: Oracle__factory;
-
-  // Wrappers
-  let uniswapV2Wrapper: FakeContract<UniswapV2Wrapper>;
-  let curveWrapper: FakeContract<CurveWrapper>;
-  let oneInchWrapper: FakeContract<OneInchWrapper>;
+  let uniswapV2Wrapper: UniswapV2Wrapper;
+  let uniswapV2WrapperFactory: UniswapV2Wrapper__factory;
+  let curveWrapper: CurveWrapper;
+  let curveWrapperFactory: CurveWrapper__factory;
+  let oneInchWrapper: OneInchWrapper;
+  let oneInchWrapperFactory: OneInchWrapper__factory;
 
   // Misc
   let amountIn: BigNumber;
@@ -33,7 +46,7 @@ describe('Oracle', async function () {
 
   before(async () => {
     await evm.reset({
-      jsonRpcUrl: getNodeUrl('ropsten'),
+      jsonRpcUrl: getNodeUrl('mainnet'),
       forkBlockNumber: forkBlockNumber.oracle,
     });
 
@@ -42,12 +55,16 @@ describe('Oracle', async function () {
     oracleFactory = (await ethers.getContractFactory('Oracle')) as Oracle__factory;
     oracle = await oracleFactory.connect(deployer).deploy();
 
-    amountIn = bn.toUnit(1);
-    amountOut = bn.toUnit(5);
+    uniswapV2WrapperFactory = (await ethers.getContractFactory('UniswapV2Wrapper')) as UniswapV2Wrapper__factory;
+    uniswapV2Wrapper = await uniswapV2WrapperFactory.connect(deployer).deploy(UNISWAP_V2_FACTORY_ADDRESS);
 
-    uniswapV2Wrapper = await smock.fake('UniswapV2Wrapper');
-    curveWrapper = await smock.fake('CurveWrapper');
-    oneInchWrapper = await smock.fake('OneInchWrapper');
+    curveWrapperFactory = (await ethers.getContractFactory('CurveWrapper')) as CurveWrapper__factory;
+    curveWrapper = await curveWrapperFactory.connect(deployer).deploy(CURVE_SYNTH_SWAP_ADDRESS);
+
+    oneInchWrapperFactory = (await ethers.getContractFactory('OneInchWrapper')) as OneInchWrapper__factory;
+    oneInchWrapper = await oneInchWrapperFactory.connect(deployer).deploy(ONE_INCH_AGGREGATOR_ADDRESS);
+
+    amountIn = bn.toUnit(1);
 
     snapshotId = await evm.snapshot.take();
   });
@@ -62,21 +79,17 @@ describe('Oracle', async function () {
 
   describe('getAmountOut', async function () {
     it('should route requests through token wrapper', async function () {
-      uniswapV2Wrapper.getAmountOut.returns(amountOut);
-      await oracle.connect(randomUser).getAmountOut(DAI_ADDRESS, amountIn, UNI_ADDRESS);
-      expect(uniswapV2Wrapper.getAmountOut.atCall(0)).to.be.calledWith(DAI_ADDRESS, amountIn, UNI_ADDRESS);
+      amountOut = bn.toBN('11565650680152156432');
+      expect(await oracle.connect(randomUser).callStatic.getAmountOut(DAI_ADDRESS, amountIn, UNI_ADDRESS)).to.eq(amountOut);
     });
 
     it('should route requests through pair wrapper', async function () {
-      curveWrapper.getAmountOut.returns(amountOut);
-      await oracle.connect(randomUser).getAmountOut(DAI_ADDRESS, amountIn, USDC_ADDRESS);
-      expect(curveWrapper.getAmountOut.atCall(0)).to.be.calledWith(DAI_ADDRESS, amountIn, USDC_ADDRESS);
+      await expect(await oracle.connect(randomUser).callStatic.getAmountOut(DAI_ADDRESS, amountIn, USDC_ADDRESS)).to.eq(amountOut);
     });
 
     it('should route requests through default wrapper', async function () {
-      oneInchWrapper.getAmountOut.returns(amountOut);
-      await oracle.connect(randomUser).getAmountOut(UNI_ADDRESS, amountIn, USDC_ADDRESS);
-      expect(oneInchWrapper.getAmountOut.atCall(0)).to.be.calledWith(UNI_ADDRESS, amountIn, USDC_ADDRESS);
+      amountOut = bn.toBN('14599952');
+      expect(await oracle.connect(randomUser).callStatic.getAmountOut(UNI_ADDRESS, amountIn, USDC_ADDRESS)).to.eq(amountOut);
     });
   });
 });
