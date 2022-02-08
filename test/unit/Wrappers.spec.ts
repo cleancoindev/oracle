@@ -161,7 +161,7 @@ describe('Wrappers', function () {
     });
 
     beforeEach(async () => {
-      uniswapPair.getReserves.returns([amountIn, amountIn, 0]);
+      uniswapPair.getReserves.returns([amountIn, amountIn.mul(5), 1]);
     });
 
     describe('getAmountOut', async function () {
@@ -187,7 +187,7 @@ describe('Wrappers', function () {
     });
 
     beforeEach(async () => {
-      uniswapPair.getReserves.returns([amountIn, amountIn, 0]);
+      uniswapPair.getReserves.returns([amountIn, amountIn.mul(5), 1]);
     });
 
     describe('getAmountOut', async function () {
