@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity >=0.8.4 <0.9.0;
 
-import './interfaces/IUniswapV3Factory.sol';
-import './libraries/OracleLibrary.sol';
+import '../interfaces/IUniswapV3Factory.sol';
+import '../libraries/OracleLibrary.sol';
 
 contract UniswapV3TWAPWrapper {
   address public immutable uniswapV3Factory;

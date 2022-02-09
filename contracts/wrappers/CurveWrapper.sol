@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity >=0.8.4 <0.9.0;
 
-import './interfaces/IExchangeWrapper.sol';
-import './interfaces/ISynthSwap.sol';
+import '../interfaces/IExchangeWrapper.sol';
+import '../interfaces/ISynthSwap.sol';
 
 contract CurveWrapper is IExchangeWrapper {
   address public immutable synthSwap;

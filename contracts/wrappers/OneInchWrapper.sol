@@ -2,8 +2,8 @@
 pragma solidity >=0.8.4 <0.9.0;
 
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import './interfaces/IExchangeWrapper.sol';
-import './interfaces/IOneSplitAudit.sol';
+import '../interfaces/IExchangeWrapper.sol';
+import '../interfaces/IOneSplitAudit.sol';
 
 contract OneInchWrapper is IExchangeWrapper {
   /// @dev Flags are used to enable/disable certain features; we use the default value

@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity >=0.8.4 <0.9.0;
 
-import './interfaces/IExchangeWrapper.sol';
-import './interfaces/IUniswapV2Pair.sol';
-import './libraries/SushiswapLibrary.sol';
+import '../interfaces/IExchangeWrapper.sol';
+import '../interfaces/IUniswapV2Pair.sol';
+import '../libraries/SushiswapLibrary.sol';
 
 contract SushiswapWrapper is IExchangeWrapper {
   address public immutable sushiswapFactory;

@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity >=0.8.4 <0.9.0;
 
-import './interfaces/IExchangeWrapper.sol';
-import './interfaces/IChainlinkOracle.sol';
+import '../interfaces/IExchangeWrapper.sol';
+import '../interfaces/IChainlinkOracle.sol';
 
 contract ChainlinkWrapper is IExchangeWrapper {
   address public immutable oracle;
