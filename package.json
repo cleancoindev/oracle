@@ -1,32 +1,32 @@
 {
-  "name": "hardhat-boilerplate",
-  "version": "1.1.0",
-  "description": "Hardhat boilerplate",
+  "name": "wonderoracle",
+  "version": "1.0.0",
+  "description": "This package provides a shared interface to query on-chain price data",
   "keywords": [
     "ethereum",
-    "smart",
-    "contracts",
-    "test",
-    "solidity",
-    "hardhat",
-    "boilerplate"
+    "oracle",
+    "chainlink",
+    "uniswap",
+    "curve",
+    "1inch",
+    "sushiswap"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/defi-wonderland/hardhat-boilerplate-ts.git"
+    "url": "git+https://github.com/gas1cent/oracle.git"
   },
   "contributors": [
     {
-      "name": "404skillz",
-      "url": "https://github.com/404skillz"
+      "name": "gas1cent",
+      "url": "https://github.com/gas1cent"
+    },
+    {
+      "name": "ng",
+      "url": "https://github.com/0xng"
     },
     {
       "name": "0xGorilla",
       "url": "https://github.com/0xGorilla"
-    },
-    {
-      "name": "wei3erHase",
-      "url": "https://github.com/wei3erHase"
     }
   ],
   "scripts": {
