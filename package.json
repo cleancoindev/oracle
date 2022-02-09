@@ -54,7 +54,7 @@
     "test:unit:parallel": "yarn test:parallel 'test/unit/**/*.spec.ts'"
   },
   "dependencies": {
-    "@defi-wonderland/smock": "^2.0.7",
+    "@defi-wonderland/smock": "2.0.7",
     "@openzeppelin/contracts": "4.4.1"
   },
   "devDependencies": {
