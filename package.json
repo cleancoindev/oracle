@@ -1,7 +1,7 @@
 {
   "name": "wonderoracle",
   "version": "1.0.0",
-  "description": "This package provides a shared interface to query on-chain price data",
+  "description": "A price oracle that unifies access to most popular price feeds.",
   "keywords": [
     "ethereum",
     "oracle",
