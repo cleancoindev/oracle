@@ -1,118 +1,26 @@
-# Hardhat Boilerplate
+[![Actions Status](https://github.com/gas1cent/oracle/actions/workflows/tests.yml/badge.svg)](https://github.com/gas1cent/oracle/actions)
 
-## Why ?
+# WonderOracle
 
-Thought to have a fast way of bootstraping projects with best practice's in mind. Having linters, prettiers, standards on how to commit, and changelog creation & maintenance.
+🔮 A price oracle that unifies access to most popular price feeds.
 
----
+# Contents
 
-## How ?
+The project is built on top of the Defi Wonderland's [Solidity boilerplate](https://github.com/defi-wonderland/solidity-boilerplate), refer to the README in that repo for the list of available tools and commands.
 
-This is achieved using several hardhat plugins, and external known packages.
+# Contracts
+There is an Oracle contract and a few wrapper contracts in the repository. All 3rd party files, libraries and interfaces are carbon copies of the originals and haven't been changed in any way.
 
----
+## Oracle.sol
+The main entry point, `Oracle` provides a unified interface for different data sources. Call `getAmountOut(address _tokenIn, uint256 _amountIn, address _tokenOut)` to calculate how much `_tokenOut` you can get for `_amountIn` of `_tokenIn`.
+Governance can set wrappers for certain tokens and pair. Pairs have priority over tokens, and tokens over the default wrapper.
 
-## Tools
-
-This boilerplate includes:
-
-- [Hardhat](https://hardhat.org/)
-- [Solhint](https://github.com/protofire/solhint)
-- [Prettier](https://github.com/prettier-solidity/prettier-plugin-solidity)
-- [Coverage](https://github.com/sc-forks/solidity-coverage)
-- [Gas reporter](https://github.com/cgewecke/hardhat-gas-reporter/tree/master)
-- [Commitlint](https://github.com/conventional-changelog/commitlint)
-- [Standard version](https://github.com/conventional-changelog/standard-version)
-- [Uniswap](https://github.com/Uniswap/uniswap-v2-periphery) + [Internal tooling](./test/utils/uniswap.ts)
-
----
-
-## Commands
-
-### **Coverage**
-
-```bash
-yarn coverage
-```
-
-Runs solidity code coverage
-<br/>
-
-### **Fork**
-
-```bash
-yarn fork
-```
-
-Runs a mainnet fork via hardhat's node forking util.
-
-```bash
-yarn fork:script {path}
-```
-
-Runs the script in mainnet's fork.
-
-```
-yarn fork:test
-```
-
-Runs tests that should be run in mainnet's fork.
-<br/>
-
-### **Lint**
-
-```bash
-yarn lint
-```
-
-Runs solhint.
-<br/>
-
-### **Prettier (lint fix)**
-
-```bash
-yarn lint:fix
-```
-
-Runs prettier
-<br/>
-
-### **Release**
-
-```bash
-yarn release
-```
-
-Runs standard changelog, changes package.json version and modifies CHANGELOG.md accordingly.
-<br/>
-
-### **Test**
-
-```bash
-yarn test:all
-```
-
-Runs all solidity tests.
-<br/>
-
-```bash
-yarn test:unit
-```
-
-Runs all solidity tests in folder [unit](./test/unit)
-<br/>
-
-```bash
-yarn test:e2e
-```
-
-Runs all solidity tests in folder [e2e](./test/e2e)
-<br/>
-
-### **Gas report**
-
-```bash
-yarn test:gas
-```
-
-Runs all tests and report gas usage.
+## Wrappers
+Currently supported
+- UniswapV2
+- UniswapV3
+- UniswapV3 TWAP
+- Sushiswap
+- 1inch
+- Curve (via SynthSwap)
+- Chainlink
