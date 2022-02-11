@@ -68,4 +68,5 @@ jobs:
       - name: Run e2e tests
         run: yarn test:e2e
         env:
-          NODE_URI_MAINNET: https://eth-mainnet.alchemyapi.io/v2/${{ secrets.ALCHEMYKEY }}
+          NODE_URI_ROPSTEN: https://eth-mainnet.alchemyapi.io/v2/${{ secrets.ALCHEMY_KEY_ROPSTEN }}
+          NODE_URI_MAINNET: https://eth-mainnet.alchemyapi.io/v2/${{ secrets.ALCHEMY_KEY_MAINNET }}
