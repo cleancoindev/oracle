@@ -21,6 +21,7 @@ library FullMath {
     // variables such that product = prod1 * 2**256 + prod0
     uint256 prod0; // Least significant 256 bits of the product
     uint256 prod1; // Most significant 256 bits of the product
+    // solhint-disable-next-line no-inline-assembly
     assembly {
       let mm := mulmod(a, b, not(0))
       prod0 := mul(a, b)
@@ -29,7 +30,8 @@ library FullMath {
 
     // Handle non-overflow cases, 256 by 256 division
     if (prod1 == 0) {
-      require(denominator > 0);
+      require(denominator > 0, 'Division by zero');
+      // solhint-disable-next-line no-inline-assembly
       assembly {
         result := div(prod0, denominator)
       }
@@ -38,7 +40,7 @@ library FullMath {
 
     // Make sure the result is less than 2**256.
     // Also prevents denominator == 0
-    require(denominator > prod1);
+    require(denominator > prod1, 'Invalid denominator');
 
     ///////////////////////////////////////////////
     // 512 by 256 division.
@@ -47,10 +49,12 @@ library FullMath {
     // Make division exact by subtracting the remainder from [prod1 prod0]
     // Compute remainder using mulmod
     uint256 remainder;
+    // solhint-disable-next-line no-inline-assembly
     assembly {
       remainder := mulmod(a, b, denominator)
     }
     // Subtract 256 bit number from 512 bit number
+    // solhint-disable-next-line no-inline-assembly
     assembly {
       prod1 := sub(prod1, gt(remainder, prod0))
       prod0 := sub(prod0, remainder)
@@ -61,17 +65,20 @@ library FullMath {
     // Always >= 1.
     uint256 twos = (type(uint256).max - denominator + 1) & denominator;
     // Divide denominator by power of two
+    // solhint-disable-next-line no-inline-assembly
     assembly {
       denominator := div(denominator, twos)
     }
 
     // Divide [prod1 prod0] by the factors of two
+    // solhint-disable-next-line no-inline-assembly
     assembly {
       prod0 := div(prod0, twos)
     }
     // Shift in bits from prod1 into prod0. For this we need
     // to flip `twos` such that it is 2**256 / twos.
     // If twos is zero, then it becomes one
+    // solhint-disable-next-line no-inline-assembly
     assembly {
       twos := add(div(sub(0, twos), twos), 1)
     }

@@ -14,9 +14,9 @@ contract ChainlinkWrapper is IExchangeWrapper {
   /// @dev _tokenIn and _tokenOut are not used because we're wrapping a certain oracle, e.g. providing ETH/USD price, and passing other assets in does not make sense
   /// @inheritdoc IExchangeWrapper
   function getAmountOut(
-    address _tokenIn,
+    address, /* _tokenIn */
     uint256 _amountIn,
-    address _tokenOut
+    address /* _tokenOut */
   ) external view override returns (uint256) {
     uint256 _price = IChainlinkOracle(oracle).latestAnswer();
     return _price * _amountIn;

@@ -4,9 +4,9 @@ pragma solidity >=0.5.0;
 /// @notice https://github.com/lbertenasco/uniswap-v3-core/blob/main/contracts/libraries/TickMath.sol
 library TickMath {
   /// @dev The minimum tick that may be passed to #getSqrtRatioAtTick computed from log base 1.0001 of 2**-128
-  int24 internal constant MIN_TICK = -887272;
+  int24 internal constant _MIN_TICK = -887272;
   /// @dev The maximum tick that may be passed to #getSqrtRatioAtTick computed from log base 1.0001 of 2**128
-  int24 internal constant MAX_TICK = -MIN_TICK;
+  int24 internal constant _MAX_TICK = -_MIN_TICK;
 
   /// @notice Calculates sqrt(1.0001^tick) * 2^96
   /// @dev Throws if |tick| > max tick
@@ -15,7 +15,7 @@ library TickMath {
   /// at the given tick
   function getSqrtRatioAtTick(int24 tick) internal pure returns (uint160 sqrtPriceX96) {
     uint256 absTick = tick < 0 ? uint256(-int256(tick)) : uint256(int256(tick));
-    require(absTick <= uint256(int256(MAX_TICK)), 'T');
+    require(absTick <= uint256(int256(_MAX_TICK)), 'T');
 
     uint256 ratio = absTick & 0x1 != 0 ? 0xfffcb933bd6fad37aa2d162d1a594001 : 0x100000000000000000000000000000000;
     if (absTick & 0x2 != 0) ratio = (ratio * 0xfff97272373d413259a46990580e213a) >> 128;
