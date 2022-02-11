@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: WTFPLv2
 pragma solidity >=0.8.4 <0.9.0;
 
+import '../interfaces/external/IUniswapV2Pair.sol';
 import '../interfaces/IExchangeWrapper.sol';
-import '../interfaces/IUniswapV2Pair.sol';
 import '../libraries/SushiswapLibrary.sol';
 
 contract SushiswapWrapper is IExchangeWrapper {

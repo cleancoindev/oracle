@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: WTFPLv2
 pragma solidity >=0.8.4 <0.9.0;
 
+import '../interfaces/external/IQuoter.sol';
 import '../interfaces/IExchangeWrapper.sol';
-import '../interfaces/IQuoter.sol';
 
 contract UniswapV3Wrapper is IExchangeWrapper {
   address public immutable uniswapV3Quoter;

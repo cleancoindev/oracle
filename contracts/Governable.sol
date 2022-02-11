@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.4 <0.9.0;
 
-import './interfaces/IGovernable.sol';
+import './interfaces/external/IGovernable.sol';
 
 /// @notice https://github.com/defi-wonderland/vesting-wallet-dev/blob/dev/contracts/Governable.sol
 abstract contract Governable is IGovernable {

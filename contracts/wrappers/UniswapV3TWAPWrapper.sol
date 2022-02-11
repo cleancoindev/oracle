@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: WTFPLv2
 pragma solidity >=0.8.4 <0.9.0;
 
-import '../interfaces/IUniswapV3Factory.sol';
+import '../interfaces/external/IUniswapV3Factory.sol';
 import '../libraries/OracleLibrary.sol';
 
 contract UniswapV3TWAPWrapper {
