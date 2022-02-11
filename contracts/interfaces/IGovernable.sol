@@ -3,6 +3,7 @@ pragma solidity >=0.8.4 <0.9.0;
 
 /// @title Governable contract
 /// @notice Manages the governance role
+/// @notice https://github.com/defi-wonderland/vesting-wallet-dev/blob/dev/contracts/interfaces/IGovernable.sol
 interface IGovernable {
   // Events
 

@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: Unlicense
+// SPDX-License-Identifier: WTFPLv2
 pragma solidity >=0.8.4 <0.9.0;
 
 import './interfaces/IOracle.sol';

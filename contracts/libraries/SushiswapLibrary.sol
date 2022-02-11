@@ -1,7 +1,7 @@
-//SPDX-License-Identifier: Unlicense
+// SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.4 <0.9.0;
 
-/// @notice This is a copy of the UniswapV2Library, with modified init code in pairFor function
+/// @notice https://github.com/sushiswap/limit-order/blob/master/contracts/libraries/UniswapV2Library.sol
 library SushiswapLibrary {
   // returns sorted token addresses, used to handle return values from pairs sorted in this order
   function sortTokens(address tokenA, address tokenB) internal pure returns (address token0, address token1) {
