@@ -27,7 +27,7 @@ import {
 
 describe('Oracle', async function () {
   // Signers
-  let deployer: SignerWithAddress;
+  let governance: SignerWithAddress;
   let randomUser: SignerWithAddress;
 
   // Contracts
@@ -51,23 +51,23 @@ describe('Oracle', async function () {
       forkBlockNumber: forkBlockNumber.oracle,
     });
 
-    [, deployer, randomUser] = await ethers.getSigners();
+    [, governance, randomUser] = await ethers.getSigners();
 
     oracleFactory = (await ethers.getContractFactory('Oracle')) as Oracle__factory;
-    oracle = await oracleFactory.connect(deployer).deploy();
+    oracle = await oracleFactory.connect(governance).deploy(governance.address);
 
     oracleWrapperUniswapV2Factory = (await ethers.getContractFactory('OracleWrapperUniswapV2')) as OracleWrapperUniswapV2__factory;
-    oracleWrapperUniswapV2 = await oracleWrapperUniswapV2Factory.connect(deployer).deploy(UNISWAP_V2_FACTORY_ADDRESS);
+    oracleWrapperUniswapV2 = await oracleWrapperUniswapV2Factory.connect(governance).deploy(UNISWAP_V2_FACTORY_ADDRESS);
 
     oracleWrapperCurveFactory = (await ethers.getContractFactory('OracleWrapperCurve')) as OracleWrapperCurve__factory;
-    oracleWrapperCurve = await oracleWrapperCurveFactory.connect(deployer).deploy(CURVE_SYNTH_SWAP_ADDRESS);
+    oracleWrapperCurve = await oracleWrapperCurveFactory.connect(governance).deploy(CURVE_SYNTH_SWAP_ADDRESS);
 
     oracleWrapper1inchFactory = (await ethers.getContractFactory('OracleWrapper1inch')) as OracleWrapper1inch__factory;
-    oracleWrapper1inch = await oracleWrapper1inchFactory.connect(deployer).deploy(ONE_INCH_AGGREGATOR_ADDRESS);
+    oracleWrapper1inch = await oracleWrapper1inchFactory.connect(governance).deploy(ONE_INCH_AGGREGATOR_ADDRESS);
 
-    oracle.connect(deployer).setDefaultWrapper(oracleWrapper1inch.address);
-    oracle.connect(deployer).setTokenWrapper(DAI_ADDRESS, oracleWrapperUniswapV2.address);
-    oracle.connect(deployer).setPairWrapper(DAI_ADDRESS, USDC_ADDRESS, oracleWrapperCurve.address);
+    oracle.connect(governance).setDefaultWrapper(oracleWrapper1inch.address);
+    oracle.connect(governance).setTokenWrapper(DAI_ADDRESS, oracleWrapperUniswapV2.address);
+    oracle.connect(governance).setPairWrapper(DAI_ADDRESS, USDC_ADDRESS, oracleWrapperCurve.address);
 
     amountIn = toUnit(1);
 

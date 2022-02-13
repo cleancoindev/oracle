@@ -11,7 +11,7 @@ contract Oracle is IOracle, Governable {
 
   address public defaultWrapper;
 
-  constructor() Governable(msg.sender) {}
+  constructor(address _governance) Governable(_governance) {}
 
   /// @inheritdoc IOracle
   function getAmountOut(

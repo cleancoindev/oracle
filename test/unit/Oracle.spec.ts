@@ -24,7 +24,7 @@ describe('Oracle', function () {
   before(async () => {
     [, governance, randomUser] = await ethers.getSigners();
     oracleFactory = (await ethers.getContractFactory('Oracle')) as Oracle__factory;
-    oracle = await oracleFactory.connect(governance).deploy();
+    oracle = await oracleFactory.connect(governance).deploy(governance.address);
     snapshotId = await evm.snapshot.take();
   });
 
