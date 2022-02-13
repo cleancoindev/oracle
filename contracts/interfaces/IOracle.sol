@@ -40,4 +40,10 @@ interface IOracle {
   /// @param _wrapper The address of the new wrapper
   /// @dev Pass 0x0000~ to remove the wrapper and use default
   function setTokenWrapper(address _tokenIn, address _wrapper) external;
+
+  /// @notice Pairs have priority over tokens, and tokens over default
+  /// @param _tokenIn The address of the base token
+  /// @param _tokenOut The address of the quote token
+  /// @return The address of the wrapper
+  function getWrapperAddress(address _tokenIn, address _tokenOut) external view returns (address);
 }

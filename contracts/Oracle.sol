@@ -47,10 +47,7 @@ contract Oracle is IOracle, Governable {
     emit TokenWrapperUpdated(_tokenIn, _wrapper);
   }
 
-  /// @notice Pairs have priority over tokens, and tokens over default
-  /// @param _tokenIn The address of the base token
-  /// @param _tokenOut The address of the quote token
-  /// @return The address of the wrapper
+  /// @inheritdoc IOracle
   function getWrapperAddress(address _tokenIn, address _tokenOut) public view returns (address) {
     address _pairWrapper = pairWrappers[_tokenIn][_tokenOut];
     if (_pairWrapper != address(0)) return _pairWrapper;
