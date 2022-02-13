@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >=0.8.4 <0.9.0;
-pragma abicoder v2;
 
 /// @notice https://github.com/Uniswap/v3-periphery/blob/main/contracts/interfaces/IQuoter.sol
 interface IQuoter {
