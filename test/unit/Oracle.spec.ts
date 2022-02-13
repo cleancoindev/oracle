@@ -1,7 +1,7 @@
 import chai from 'chai';
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
-import { Oracle, Oracle__factory, UniswapV2Wrapper, CurveWrapper, OneInchWrapper } from '@typechained';
+import { Oracle, Oracle__factory, OracleWrapperUniswapV2, OracleWrapperCurve, OracleWrapper1inch } from '@typechained';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { evm, wallet, behaviours } from '@utils';
 import { toUnit } from '@utils/bn';
@@ -92,44 +92,44 @@ describe('Oracle', function () {
 
   describe('getAmountOut', async function () {
     // Wrappers
-    let uniswapV2Wrapper: FakeContract<UniswapV2Wrapper>;
-    let curveWrapper: FakeContract<CurveWrapper>;
-    let oneInchWrapper: FakeContract<OneInchWrapper>;
+    let oracleWrapperUniswapV2: FakeContract<OracleWrapperUniswapV2>;
+    let oracleWrapperCurve: FakeContract<OracleWrapperCurve>;
+    let oracleWrapper1inch: FakeContract<OracleWrapper1inch>;
     let amountIn: BigNumber;
     let amountOut: BigNumber;
 
     beforeEach(async () => {
       await evm.snapshot.revert(snapshotId);
 
-      uniswapV2Wrapper = await smock.fake('UniswapV2Wrapper');
-      curveWrapper = await smock.fake('CurveWrapper');
-      oneInchWrapper = await smock.fake('OneInchWrapper');
+      oracleWrapperUniswapV2 = await smock.fake('OracleWrapperUniswapV2');
+      oracleWrapperCurve = await smock.fake('OracleWrapperCurve');
+      oracleWrapper1inch = await smock.fake('OracleWrapper1inch');
 
       amountIn = toUnit(1);
       amountOut = toUnit(5);
 
-      oracle.connect(governance).setDefaultWrapper(oneInchWrapper.address);
-      oracle.connect(governance).setTokenWrapper(DAI_ADDRESS, uniswapV2Wrapper.address);
-      oracle.connect(governance).setPairWrapper(DAI_ADDRESS, USDC_ADDRESS, curveWrapper.address);
+      oracle.connect(governance).setDefaultWrapper(oracleWrapper1inch.address);
+      oracle.connect(governance).setTokenWrapper(DAI_ADDRESS, oracleWrapperUniswapV2.address);
+      oracle.connect(governance).setPairWrapper(DAI_ADDRESS, USDC_ADDRESS, oracleWrapperCurve.address);
     });
 
     describe('getAmountOut', async function () {
       it('should route requests through token wrapper', async function () {
-        uniswapV2Wrapper.getAmountOut.returns(amountOut);
+        oracleWrapperUniswapV2.getAmountOut.returns(amountOut);
         await oracle.connect(randomUser).getAmountOut(DAI_ADDRESS, amountIn, UNI_ADDRESS);
-        expect(uniswapV2Wrapper.getAmountOut.atCall(0)).to.be.calledWith(DAI_ADDRESS, amountIn, UNI_ADDRESS);
+        expect(oracleWrapperUniswapV2.getAmountOut.atCall(0)).to.be.calledWith(DAI_ADDRESS, amountIn, UNI_ADDRESS);
       });
 
       it('should route requests through pair wrapper', async function () {
-        curveWrapper.getAmountOut.returns(amountOut);
+        oracleWrapperCurve.getAmountOut.returns(amountOut);
         await oracle.connect(randomUser).getAmountOut(DAI_ADDRESS, amountIn, USDC_ADDRESS);
-        expect(curveWrapper.getAmountOut.atCall(0)).to.be.calledWith(DAI_ADDRESS, amountIn, USDC_ADDRESS);
+        expect(oracleWrapperCurve.getAmountOut.atCall(0)).to.be.calledWith(DAI_ADDRESS, amountIn, USDC_ADDRESS);
       });
 
       it('should route requests through default wrapper', async function () {
-        oneInchWrapper.getAmountOut.returns(amountOut);
+        oracleWrapper1inch.getAmountOut.returns(amountOut);
         await oracle.connect(randomUser).getAmountOut(UNI_ADDRESS, amountIn, USDC_ADDRESS);
-        expect(oneInchWrapper.getAmountOut.atCall(0)).to.be.calledWith(UNI_ADDRESS, amountIn, USDC_ADDRESS);
+        expect(oracleWrapper1inch.getAmountOut.atCall(0)).to.be.calledWith(UNI_ADDRESS, amountIn, USDC_ADDRESS);
       });
     });
   });

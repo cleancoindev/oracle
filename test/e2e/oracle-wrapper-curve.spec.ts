@@ -1,22 +1,22 @@
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import { BigNumber, utils } from 'ethers';
-import { UniswapV2Wrapper, UniswapV2Wrapper__factory } from '@typechained';
+import { OracleWrapperCurve, OracleWrapperCurve__factory } from '@typechained';
 import { evm } from '@utils';
 import { toUnit, toBN } from '@utils/bn';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { DAI_ADDRESS, USDC_ADDRESS, UNISWAP_V2_FACTORY_ADDRESS } from '@utils/constants';
+import { DAI_ADDRESS, USDC_ADDRESS, CURVE_SYNTH_SWAP_ADDRESS } from '@utils/constants';
 import { getNodeUrl } from 'utils/network';
 import forkBlockNumber from './fork-block-numbers';
 
-describe('UniswapV2Wrapper', async function () {
+describe('OracleWrapperCurve', async function () {
   // Signers
   let deployer: SignerWithAddress;
   let randomUser: SignerWithAddress;
 
   // Contracts
-  let uniswapV2Wrapper: UniswapV2Wrapper;
-  let uniswapV2WrapperFactory: UniswapV2Wrapper__factory;
+  let oracleWrapperCurve: OracleWrapperCurve;
+  let oracleWrapperCurveFactory: OracleWrapperCurve__factory;
 
   // Misc
   let amountIn: BigNumber;
@@ -31,11 +31,11 @@ describe('UniswapV2Wrapper', async function () {
 
     [, deployer, randomUser] = await ethers.getSigners();
 
-    uniswapV2WrapperFactory = (await ethers.getContractFactory('UniswapV2Wrapper')) as UniswapV2Wrapper__factory;
-    uniswapV2Wrapper = await uniswapV2WrapperFactory.connect(deployer).deploy(UNISWAP_V2_FACTORY_ADDRESS);
+    oracleWrapperCurveFactory = (await ethers.getContractFactory('OracleWrapperCurve')) as OracleWrapperCurve__factory;
+    oracleWrapperCurve = await oracleWrapperCurveFactory.connect(deployer).deploy(CURVE_SYNTH_SWAP_ADDRESS);
 
     amountIn = toUnit(1);
-    amountOut = toBN('996207');
+    amountOut = toBN('995970');
 
     snapshotId = await evm.snapshot.take();
   });
@@ -45,8 +45,8 @@ describe('UniswapV2Wrapper', async function () {
   });
 
   describe('getAmountOut', async function () {
-    it('calculates the swap amount through Uniswap pair', async function () {
-      expect(await uniswapV2Wrapper.connect(randomUser).getAmountOut(DAI_ADDRESS, amountIn, USDC_ADDRESS)).to.equal(amountOut);
+    it('calculates the swap amount through Curve synth swap', async function () {
+      expect(await oracleWrapperCurve.connect(randomUser).getAmountOut(DAI_ADDRESS, amountIn, USDC_ADDRESS)).to.equal(amountOut);
     });
   });
 });

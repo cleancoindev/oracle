@@ -3,9 +3,9 @@ pragma solidity >=0.8.4 <0.9.0;
 
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '../interfaces/external/IOneSplitAudit.sol';
-import '../interfaces/IExchangeWrapper.sol';
+import '../interfaces/IOracleWrapper.sol';
 
-contract OneInchWrapper is IExchangeWrapper {
+contract OracleWrapper1inch is IOracleWrapper {
   /// @dev Flags are used to enable/disable certain features; we use the default value
   uint256 public constant FLAGS = 0;
   /// @dev 1inch allows to split the swap in parts and execute them through different DEXes
@@ -16,7 +16,7 @@ contract OneInchWrapper is IExchangeWrapper {
     oneInchAggregator = _oneInchAggregator;
   }
 
-  /// @inheritdoc IExchangeWrapper
+  /// @inheritdoc IOracleWrapper
   /// @return _amountOut The amount of _tokenOut that can be exchanged to _amountIn of _tokenIn
   function getAmountOut(
     address _tokenIn,

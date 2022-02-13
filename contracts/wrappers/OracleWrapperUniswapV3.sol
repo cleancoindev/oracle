@@ -2,9 +2,9 @@
 pragma solidity >=0.8.4 <0.9.0;
 
 import '../interfaces/external/IQuoter.sol';
-import '../interfaces/IExchangeWrapper.sol';
+import '../interfaces/IOracleWrapper.sol';
 
-contract UniswapV3Wrapper is IExchangeWrapper {
+contract OracleWrapperUniswapV3 is IOracleWrapper {
   address public immutable uniswapV3Quoter;
 
   // We assume 0.5% fee and no restrictions on the max price
@@ -15,7 +15,7 @@ contract UniswapV3Wrapper is IExchangeWrapper {
     uniswapV3Quoter = _uniswapV3Quoter;
   }
 
-  /// @inheritdoc IExchangeWrapper
+  /// @inheritdoc IOracleWrapper
   function getAmountOut(
     address _tokenIn,
     uint256 _amountIn,

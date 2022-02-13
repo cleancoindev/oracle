@@ -16,33 +16,33 @@ import {
 } from '@utils/constants';
 import {
   // Chainlink
-  ChainlinkWrapper,
-  ChainlinkWrapper__factory,
+  OracleWrapperChainlink,
+  OracleWrapperChainlink__factory,
   IChainlinkOracle,
 
   // Curve
-  CurveWrapper,
-  CurveWrapper__factory,
+  OracleWrapperCurve,
+  OracleWrapperCurve__factory,
   ISynthSwap,
 
   // 1inch
-  OneInchWrapper,
-  OneInchWrapper__factory,
+  OracleWrapper1inch,
+  OracleWrapper1inch__factory,
   IOneSplitAudit,
 
   // UniswapV2
-  UniswapV2Wrapper,
-  UniswapV2Wrapper__factory,
+  OracleWrapperUniswapV2,
+  OracleWrapperUniswapV2__factory,
   IUniswapV2Pair,
 
   // UniswapV3
-  UniswapV3Wrapper,
-  UniswapV3Wrapper__factory,
+  OracleWrapperUniswapV3,
+  OracleWrapperUniswapV3__factory,
   IQuoter,
 
   // Sushiswap
-  SushiswapWrapper,
-  SushiswapWrapper__factory,
+  OracleWrapperSushiswap,
+  OracleWrapperSushiswap__factory,
 } from '@typechained';
 
 chai.use(smock.matchers);
@@ -67,15 +67,15 @@ describe('Wrappers', function () {
     tokenOut = USDC_ADDRESS;
   });
 
-  describe('ChainlinkWrapper', function () {
-    let wrapper: ChainlinkWrapper;
-    let wrapperFactory: ChainlinkWrapper__factory;
+  describe('OracleWrapperChainlink', function () {
+    let wrapper: OracleWrapperChainlink;
+    let wrapperFactory: OracleWrapperChainlink__factory;
     let chainlinkOracle: FakeContract<IChainlinkOracle>;
 
     before(async () => {
       chainlinkOracle = await smock.fake('IChainlinkOracle');
 
-      wrapperFactory = (await ethers.getContractFactory('ChainlinkWrapper')) as ChainlinkWrapper__factory;
+      wrapperFactory = (await ethers.getContractFactory('OracleWrapperChainlink')) as OracleWrapperChainlink__factory;
       wrapper = await wrapperFactory.connect(deployer).deploy(chainlinkOracle.address);
 
       snapshotId = await evm.snapshot.take();
@@ -94,15 +94,15 @@ describe('Wrappers', function () {
     });
   });
 
-  describe('CurveWrapper', function () {
-    let wrapper: CurveWrapper;
-    let wrapperFactory: CurveWrapper__factory;
+  describe('OracleWrapperCurve', function () {
+    let wrapper: OracleWrapperCurve;
+    let wrapperFactory: OracleWrapperCurve__factory;
     let syntSwap: FakeContract<ISynthSwap>;
 
     before(async () => {
       syntSwap = await smock.fake('ISynthSwap');
 
-      wrapperFactory = (await ethers.getContractFactory('CurveWrapper')) as CurveWrapper__factory;
+      wrapperFactory = (await ethers.getContractFactory('OracleWrapperCurve')) as OracleWrapperCurve__factory;
       wrapper = await wrapperFactory.connect(deployer).deploy(syntSwap.address);
 
       snapshotId = await evm.snapshot.take();
@@ -120,15 +120,15 @@ describe('Wrappers', function () {
     });
   });
 
-  describe('OneInchWrapper', function () {
-    let wrapper: OneInchWrapper;
-    let wrapperFactory: OneInchWrapper__factory;
+  describe('OracleWrapper1inch', function () {
+    let wrapper: OracleWrapper1inch;
+    let wrapperFactory: OracleWrapper1inch__factory;
     let oneSplit: FakeContract<IOneSplitAudit>;
 
     before(async () => {
       oneSplit = await smock.fake('IOneSplitAudit');
 
-      wrapperFactory = (await ethers.getContractFactory('OneInchWrapper')) as OneInchWrapper__factory;
+      wrapperFactory = (await ethers.getContractFactory('OracleWrapper1inch')) as OracleWrapper1inch__factory;
       wrapper = await wrapperFactory.connect(deployer).deploy(oneSplit.address);
 
       snapshotId = await evm.snapshot.take();
@@ -146,15 +146,15 @@ describe('Wrappers', function () {
     });
   });
 
-  describe('UniswapV2Wrapper', function () {
-    let wrapper: UniswapV2Wrapper;
-    let wrapperFactory: UniswapV2Wrapper__factory;
+  describe('OracleWrapperUniswapV2', function () {
+    let wrapper: OracleWrapperUniswapV2;
+    let wrapperFactory: OracleWrapperUniswapV2__factory;
     let uniswapPair: FakeContract<IUniswapV2Pair>;
 
     before(async () => {
       uniswapPair = await smock.fake('IUniswapV2Pair', { address: UNISWAP_V2_PAIR_ADDRESS });
 
-      wrapperFactory = (await ethers.getContractFactory('UniswapV2Wrapper')) as UniswapV2Wrapper__factory;
+      wrapperFactory = (await ethers.getContractFactory('OracleWrapperUniswapV2')) as OracleWrapperUniswapV2__factory;
       wrapper = await wrapperFactory.connect(deployer).deploy(UNISWAP_V2_FACTORY_ADDRESS);
 
       snapshotId = await evm.snapshot.take();
@@ -172,15 +172,15 @@ describe('Wrappers', function () {
     });
   });
 
-  describe('SushiswapWrapper', function () {
-    let wrapper: SushiswapWrapper;
-    let wrapperFactory: SushiswapWrapper__factory;
+  describe('OracleWrapperSushiswap', function () {
+    let wrapper: OracleWrapperSushiswap;
+    let wrapperFactory: OracleWrapperSushiswap__factory;
     let uniswapPair: FakeContract<IUniswapV2Pair>;
 
     before(async () => {
       uniswapPair = await smock.fake('IUniswapV2Pair', { address: SUSHISWAP_PAIR_ADDRESS });
 
-      wrapperFactory = (await ethers.getContractFactory('SushiswapWrapper')) as SushiswapWrapper__factory;
+      wrapperFactory = (await ethers.getContractFactory('OracleWrapperSushiswap')) as OracleWrapperSushiswap__factory;
       wrapper = await wrapperFactory.connect(deployer).deploy(SUSHISWAP_FACTORY_ADDRESS);
 
       snapshotId = await evm.snapshot.take();
@@ -198,9 +198,9 @@ describe('Wrappers', function () {
     });
   });
 
-  describe('UniswapV3Wrapper', function () {
-    let wrapper: UniswapV3Wrapper;
-    let wrapperFactory: UniswapV3Wrapper__factory;
+  describe('OracleWrapperUniswapV3', function () {
+    let wrapper: OracleWrapperUniswapV3;
+    let wrapperFactory: OracleWrapperUniswapV3__factory;
     let quoter: FakeContract<IQuoter>;
     let swapFee: Number;
     let priceLimit: BigNumber;
@@ -208,7 +208,7 @@ describe('Wrappers', function () {
     before(async () => {
       quoter = await smock.fake('IQuoter');
 
-      wrapperFactory = (await ethers.getContractFactory('UniswapV3Wrapper')) as UniswapV3Wrapper__factory;
+      wrapperFactory = (await ethers.getContractFactory('OracleWrapperUniswapV3')) as OracleWrapperUniswapV3__factory;
       wrapper = await wrapperFactory.connect(deployer).deploy(quoter.address);
 
       snapshotId = await evm.snapshot.take();

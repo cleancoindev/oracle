@@ -17,12 +17,12 @@ import {
 import {
   Oracle,
   Oracle__factory,
-  UniswapV2Wrapper,
-  UniswapV2Wrapper__factory,
-  CurveWrapper,
-  CurveWrapper__factory,
-  OneInchWrapper,
-  OneInchWrapper__factory,
+  OracleWrapperUniswapV2,
+  OracleWrapperUniswapV2__factory,
+  OracleWrapperCurve,
+  OracleWrapperCurve__factory,
+  OracleWrapper1inch,
+  OracleWrapper1inch__factory,
 } from '@typechained';
 
 describe('Oracle', async function () {
@@ -33,12 +33,12 @@ describe('Oracle', async function () {
   // Contracts
   let oracle: Oracle;
   let oracleFactory: Oracle__factory;
-  let uniswapV2Wrapper: UniswapV2Wrapper;
-  let uniswapV2WrapperFactory: UniswapV2Wrapper__factory;
-  let curveWrapper: CurveWrapper;
-  let curveWrapperFactory: CurveWrapper__factory;
-  let oneInchWrapper: OneInchWrapper;
-  let oneInchWrapperFactory: OneInchWrapper__factory;
+  let oracleWrapperUniswapV2: OracleWrapperUniswapV2;
+  let oracleWrapperUniswapV2Factory: OracleWrapperUniswapV2__factory;
+  let oracleWrapperCurve: OracleWrapperCurve;
+  let oracleWrapperCurveFactory: OracleWrapperCurve__factory;
+  let oracleWrapper1inch: OracleWrapper1inch;
+  let oracleWrapper1inchFactory: OracleWrapper1inch__factory;
 
   // Misc
   let amountIn: BigNumber;
@@ -56,18 +56,18 @@ describe('Oracle', async function () {
     oracleFactory = (await ethers.getContractFactory('Oracle')) as Oracle__factory;
     oracle = await oracleFactory.connect(deployer).deploy();
 
-    uniswapV2WrapperFactory = (await ethers.getContractFactory('UniswapV2Wrapper')) as UniswapV2Wrapper__factory;
-    uniswapV2Wrapper = await uniswapV2WrapperFactory.connect(deployer).deploy(UNISWAP_V2_FACTORY_ADDRESS);
+    oracleWrapperUniswapV2Factory = (await ethers.getContractFactory('OracleWrapperUniswapV2')) as OracleWrapperUniswapV2__factory;
+    oracleWrapperUniswapV2 = await oracleWrapperUniswapV2Factory.connect(deployer).deploy(UNISWAP_V2_FACTORY_ADDRESS);
 
-    curveWrapperFactory = (await ethers.getContractFactory('CurveWrapper')) as CurveWrapper__factory;
-    curveWrapper = await curveWrapperFactory.connect(deployer).deploy(CURVE_SYNTH_SWAP_ADDRESS);
+    oracleWrapperCurveFactory = (await ethers.getContractFactory('OracleWrapperCurve')) as OracleWrapperCurve__factory;
+    oracleWrapperCurve = await oracleWrapperCurveFactory.connect(deployer).deploy(CURVE_SYNTH_SWAP_ADDRESS);
 
-    oneInchWrapperFactory = (await ethers.getContractFactory('OneInchWrapper')) as OneInchWrapper__factory;
-    oneInchWrapper = await oneInchWrapperFactory.connect(deployer).deploy(ONE_INCH_AGGREGATOR_ADDRESS);
+    oracleWrapper1inchFactory = (await ethers.getContractFactory('OracleWrapper1inch')) as OracleWrapper1inch__factory;
+    oracleWrapper1inch = await oracleWrapper1inchFactory.connect(deployer).deploy(ONE_INCH_AGGREGATOR_ADDRESS);
 
-    oracle.connect(deployer).setDefaultWrapper(oneInchWrapper.address);
-    oracle.connect(deployer).setTokenWrapper(DAI_ADDRESS, uniswapV2Wrapper.address);
-    oracle.connect(deployer).setPairWrapper(DAI_ADDRESS, USDC_ADDRESS, curveWrapper.address);
+    oracle.connect(deployer).setDefaultWrapper(oracleWrapper1inch.address);
+    oracle.connect(deployer).setTokenWrapper(DAI_ADDRESS, oracleWrapperUniswapV2.address);
+    oracle.connect(deployer).setPairWrapper(DAI_ADDRESS, USDC_ADDRESS, oracleWrapperCurve.address);
 
     amountIn = toUnit(1);
 

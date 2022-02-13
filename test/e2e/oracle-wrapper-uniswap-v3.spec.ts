@@ -1,22 +1,22 @@
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import { BigNumber, utils } from 'ethers';
-import { ChainlinkWrapper, ChainlinkWrapper__factory } from '@typechained';
+import { OracleWrapperUniswapV3, OracleWrapperUniswapV3__factory } from '@typechained';
 import { evm } from '@utils';
 import { toUnit, toBN } from '@utils/bn';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { USDC_ADDRESS, USD_ADDRESS, CHAINLINK_FEED_ADDRESS } from '@utils/constants';
+import { DAI_ADDRESS, USDC_ADDRESS, UNISWAP_V3_ROUTER_ADDRESS, UNISWAP_V3_QUOTER_ADDRESS } from '@utils/constants';
 import { getNodeUrl } from 'utils/network';
 import forkBlockNumber from './fork-block-numbers';
 
-describe('ChainlinkWrapper', async function () {
+describe('OracleWrapperUniswapV3', async function () {
   // Signers
   let deployer: SignerWithAddress;
   let randomUser: SignerWithAddress;
 
   // Contracts
-  let chainlinkWrapper: ChainlinkWrapper;
-  let chainlinkWrapperFactory: ChainlinkWrapper__factory;
+  let oracleWrapperUniswapV3: OracleWrapperUniswapV3;
+  let oracleWrapperUniswapV3Factory: OracleWrapperUniswapV3__factory;
 
   // Misc
   let amountIn: BigNumber;
@@ -31,11 +31,11 @@ describe('ChainlinkWrapper', async function () {
 
     [, deployer, randomUser] = await ethers.getSigners();
 
-    chainlinkWrapperFactory = (await ethers.getContractFactory('ChainlinkWrapper')) as ChainlinkWrapper__factory;
-    chainlinkWrapper = await chainlinkWrapperFactory.connect(deployer).deploy(CHAINLINK_FEED_ADDRESS);
+    oracleWrapperUniswapV3Factory = (await ethers.getContractFactory('OracleWrapperUniswapV3')) as OracleWrapperUniswapV3__factory;
+    oracleWrapperUniswapV3 = await oracleWrapperUniswapV3Factory.connect(deployer).deploy(UNISWAP_V3_QUOTER_ADDRESS);
 
     amountIn = toUnit(1);
-    amountOut = toBN('99989271000000000000000000');
+    amountOut = toUnit(1);
 
     snapshotId = await evm.snapshot.take();
   });
@@ -45,8 +45,8 @@ describe('ChainlinkWrapper', async function () {
   });
 
   describe('getAmountOut', async function () {
-    it('calculates the swap amount through Chainlink feed', async function () {
-      expect(await chainlinkWrapper.connect(randomUser).getAmountOut(USDC_ADDRESS, amountIn, USD_ADDRESS)).to.equal(amountOut);
+    it('calculates swap amount through Uniswap quoter', async function () {
+      expect(await oracleWrapperUniswapV3.connect(randomUser).callStatic.getAmountOut(DAI_ADDRESS, amountIn, USDC_ADDRESS)).to.equal(amountOut);
     });
   });
 });

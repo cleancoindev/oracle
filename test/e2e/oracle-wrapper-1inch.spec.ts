@@ -1,22 +1,22 @@
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import { BigNumber, utils } from 'ethers';
-import { UniswapV3TWAPWrapper, UniswapV3TWAPWrapper__factory } from '@typechained';
+import { OracleWrapper1inch, OracleWrapper1inch__factory } from '@typechained';
 import { evm } from '@utils';
 import { toUnit, toBN } from '@utils/bn';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { DAI_ADDRESS, USDC_ADDRESS, UNISWAP_V3_FACTORY_ADDRESS } from '@utils/constants';
+import { USDC_ADDRESS, DAI_ADDRESS, ONE_INCH_AGGREGATOR_ADDRESS } from '@utils/constants';
 import { getNodeUrl } from 'utils/network';
 import forkBlockNumber from './fork-block-numbers';
 
-describe('UniswapV3TWAPWrapper', async function () {
+describe('OracleWrapper1inch', async function () {
   // Signers
   let deployer: SignerWithAddress;
   let randomUser: SignerWithAddress;
 
   // Contracts
-  let uniswapV3TWAPWrapper: UniswapV3TWAPWrapper;
-  let uniswapV3TWAPWrapperFactory: UniswapV3TWAPWrapper__factory;
+  let oracleWrapper1inch: OracleWrapper1inch;
+  let oracleWrapper1inchFactory: OracleWrapper1inch__factory;
 
   // Misc
   let amountIn: BigNumber;
@@ -31,11 +31,11 @@ describe('UniswapV3TWAPWrapper', async function () {
 
     [, deployer, randomUser] = await ethers.getSigners();
 
-    uniswapV3TWAPWrapperFactory = (await ethers.getContractFactory('UniswapV3TWAPWrapper')) as UniswapV3TWAPWrapper__factory;
-    uniswapV3TWAPWrapper = await uniswapV3TWAPWrapperFactory.connect(deployer).deploy(UNISWAP_V3_FACTORY_ADDRESS);
+    oracleWrapper1inchFactory = (await ethers.getContractFactory('OracleWrapper1inch')) as OracleWrapper1inch__factory;
+    oracleWrapper1inch = await oracleWrapper1inchFactory.connect(deployer).deploy(ONE_INCH_AGGREGATOR_ADDRESS);
 
     amountIn = toUnit(1);
-    amountOut = toBN('1000002');
+    amountOut = toBN('1004470');
 
     snapshotId = await evm.snapshot.take();
   });
@@ -44,11 +44,9 @@ describe('UniswapV3TWAPWrapper', async function () {
     await evm.snapshot.revert(snapshotId);
   });
 
-  describe('getTWAPAmountOut', async function () {
-    it('calculates swap amount through Uniswap quoter', async function () {
-      expect(await uniswapV3TWAPWrapper.connect(randomUser).callStatic.getTWAPAmountOut(DAI_ADDRESS, amountIn, USDC_ADDRESS, 3600)).to.equal(
-        amountOut
-      );
+  describe('getAmountOut', async function () {
+    it('calculates the swap amount through OneSplitAudit', async function () {
+      expect(await oracleWrapper1inch.connect(randomUser).getAmountOut(DAI_ADDRESS, amountIn, USDC_ADDRESS)).to.equal(amountOut);
     });
   });
 });

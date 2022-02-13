@@ -4,7 +4,7 @@ pragma solidity >=0.8.4 <0.9.0;
 import '../interfaces/external/IUniswapV3Factory.sol';
 import '../libraries/OracleLibrary.sol';
 
-contract UniswapV3TWAPWrapper {
+contract OracleWrapperUniswapV3TWAP {
   address public immutable uniswapV3Factory;
   uint24 public constant SWAP_FEE = 500;
 

@@ -2,16 +2,16 @@
 pragma solidity >=0.8.4 <0.9.0;
 
 import '../interfaces/external/ISynthSwap.sol';
-import '../interfaces/IExchangeWrapper.sol';
+import '../interfaces/IOracleWrapper.sol';
 
-contract CurveWrapper is IExchangeWrapper {
+contract OracleWrapperCurve is IOracleWrapper {
   address public immutable synthSwap;
 
   constructor(address _synthSwap) {
     synthSwap = _synthSwap;
   }
 
-  /// @inheritdoc IExchangeWrapper
+  /// @inheritdoc IOracleWrapper
   function getAmountOut(
     address _tokenIn,
     uint256 _amountIn,

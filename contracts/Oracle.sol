@@ -2,7 +2,7 @@
 pragma solidity >=0.8.4 <0.9.0;
 
 import './interfaces/IOracle.sol';
-import './interfaces/IExchangeWrapper.sol';
+import './interfaces/IOracleWrapper.sol';
 import './Governable.sol';
 
 contract Oracle is IOracle, Governable {
@@ -21,7 +21,7 @@ contract Oracle is IOracle, Governable {
   ) external returns (uint256) {
     address _wrapperAddress = getWrapperAddress(_tokenIn, _tokenOut);
     if (_wrapperAddress == address(0)) revert ZeroAddress();
-    return IExchangeWrapper(_wrapperAddress).getAmountOut(_tokenIn, _amountIn, _tokenOut);
+    return IOracleWrapper(_wrapperAddress).getAmountOut(_tokenIn, _amountIn, _tokenOut);
   }
 
   /// @inheritdoc IOracle

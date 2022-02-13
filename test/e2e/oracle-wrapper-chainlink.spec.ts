@@ -1,22 +1,22 @@
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import { BigNumber, utils } from 'ethers';
-import { OneInchWrapper, OneInchWrapper__factory } from '@typechained';
+import { OracleWrapperChainlink, OracleWrapperChainlink__factory } from '@typechained';
 import { evm } from '@utils';
 import { toUnit, toBN } from '@utils/bn';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { USDC_ADDRESS, DAI_ADDRESS, ONE_INCH_AGGREGATOR_ADDRESS } from '@utils/constants';
+import { USDC_ADDRESS, USD_ADDRESS, CHAINLINK_FEED_ADDRESS } from '@utils/constants';
 import { getNodeUrl } from 'utils/network';
 import forkBlockNumber from './fork-block-numbers';
 
-describe('OneInchWrapper', async function () {
+describe('OracleWrapperChainlink', async function () {
   // Signers
   let deployer: SignerWithAddress;
   let randomUser: SignerWithAddress;
 
   // Contracts
-  let oneInchWrapper: OneInchWrapper;
-  let oneInchWrapperFactory: OneInchWrapper__factory;
+  let oracleWrapperChainlink: OracleWrapperChainlink;
+  let oracleWrapperChainlinkFactory: OracleWrapperChainlink__factory;
 
   // Misc
   let amountIn: BigNumber;
@@ -31,11 +31,11 @@ describe('OneInchWrapper', async function () {
 
     [, deployer, randomUser] = await ethers.getSigners();
 
-    oneInchWrapperFactory = (await ethers.getContractFactory('OneInchWrapper')) as OneInchWrapper__factory;
-    oneInchWrapper = await oneInchWrapperFactory.connect(deployer).deploy(ONE_INCH_AGGREGATOR_ADDRESS);
+    oracleWrapperChainlinkFactory = (await ethers.getContractFactory('OracleWrapperChainlink')) as OracleWrapperChainlink__factory;
+    oracleWrapperChainlink = await oracleWrapperChainlinkFactory.connect(deployer).deploy(CHAINLINK_FEED_ADDRESS);
 
     amountIn = toUnit(1);
-    amountOut = toBN('1004470');
+    amountOut = toBN('99989271000000000000000000');
 
     snapshotId = await evm.snapshot.take();
   });
@@ -45,8 +45,8 @@ describe('OneInchWrapper', async function () {
   });
 
   describe('getAmountOut', async function () {
-    it('calculates the swap amount through OneSplitAudit', async function () {
-      expect(await oneInchWrapper.connect(randomUser).getAmountOut(DAI_ADDRESS, amountIn, USDC_ADDRESS)).to.equal(amountOut);
+    it('calculates the swap amount through Chainlink feed', async function () {
+      expect(await oracleWrapperChainlink.connect(randomUser).getAmountOut(USDC_ADDRESS, amountIn, USD_ADDRESS)).to.equal(amountOut);
     });
   });
 });
