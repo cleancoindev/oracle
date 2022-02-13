@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: WTFPLv2
 pragma solidity >=0.8.4 <0.9.0;
 
-interface IOracle {
+import './external/IGovernable.sol';
+
+interface IOracle is IGovernable {
   /// @notice Fires when the default wrapper's address is changed.
   event DefaultWrapperUpdated(address wrapper);
   event PairWrapperUpdated(address _tokenIn, address _tokenOut, address _wrapper);
