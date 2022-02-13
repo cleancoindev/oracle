@@ -1,7 +1,8 @@
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import { BigNumber, utils } from 'ethers';
-import { evm, bn } from '@utils';
+import { evm } from '@utils';
+import { toUnit, toBN } from '@utils/bn';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { getNodeUrl } from 'utils/network';
 import forkBlockNumber from './fork-block-numbers';
@@ -64,22 +65,22 @@ describe('Oracle', async function () {
     oneInchWrapperFactory = (await ethers.getContractFactory('OneInchWrapper')) as OneInchWrapper__factory;
     oneInchWrapper = await oneInchWrapperFactory.connect(deployer).deploy(ONE_INCH_AGGREGATOR_ADDRESS);
 
-    amountIn = bn.toUnit(1);
+    oracle.connect(deployer).setDefaultWrapper(oneInchWrapper.address);
+    oracle.connect(deployer).setTokenWrapper(DAI_ADDRESS, uniswapV2Wrapper.address);
+    oracle.connect(deployer).setPairWrapper(DAI_ADDRESS, USDC_ADDRESS, curveWrapper.address);
+
+    amountIn = toUnit(1);
 
     snapshotId = await evm.snapshot.take();
   });
 
   beforeEach(async () => {
     await evm.snapshot.revert(snapshotId);
-
-    oracle.connect(deployer).setDefaultWrapper(oneInchWrapper.address);
-    oracle.connect(deployer).setTokenWrapper(DAI_ADDRESS, uniswapV2Wrapper.address);
-    oracle.connect(deployer).setPairWrapper(DAI_ADDRESS, USDC_ADDRESS, curveWrapper.address);
   });
 
   describe('getAmountOut', async function () {
     it('should route requests through token wrapper', async function () {
-      amountOut = bn.toBN('11565650680152156432');
+      amountOut = toBN('11565650680152156432');
       expect(await oracle.connect(randomUser).callStatic.getAmountOut(DAI_ADDRESS, amountIn, UNI_ADDRESS)).to.eq(amountOut);
     });
 
@@ -88,7 +89,7 @@ describe('Oracle', async function () {
     });
 
     it('should route requests through default wrapper', async function () {
-      amountOut = bn.toBN('14599952');
+      amountOut = toBN('14599952');
       expect(await oracle.connect(randomUser).callStatic.getAmountOut(UNI_ADDRESS, amountIn, USDC_ADDRESS)).to.eq(amountOut);
     });
   });
